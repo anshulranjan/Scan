@@ -56,11 +56,16 @@ public class MainActivity extends AppCompatActivity {
     private QRGEncoder qrgEncoder;
     private AppCompatActivity activity;
     Button b1;
-    String typeofperson;
+    Button b2,b3;
+    String typeofperson, suffering;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        b2 = (Button) findViewById(R.id.adddetails);
+        b3 = (Button) findViewById(R.id.generate_barcode);
+        b2.setVisibility(View.INVISIBLE);
+        b3.setVisibility(View.INVISIBLE);
         if (user == null) {
             signIn();
         } else {
@@ -77,7 +82,22 @@ public class MainActivity extends AppCompatActivity {
                     else
                     {
                         typeofperson = dataSnapshot.child("type").getValue(String.class);
-
+                        suffering = dataSnapshot.child("suffering").getValue(String.class);
+                        Log.d("Message", typeofperson);
+                        b2.setVisibility(View.VISIBLE);
+                        b3.setVisibility(View.VISIBLE);
+                        b2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(typeofperson.equals("Public Place")) {
+                                    startActivity(new Intent(getApplicationContext(), Scanner.class));
+                                }
+                                else
+                                {
+                                    Toast.makeText(MainActivity.this, "You are not allowed to enter", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }
                 }
                 @Override
@@ -97,15 +117,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         qrImage = findViewById(R.id.qr_image);
-        edtValue = findViewById(R.id.edt_value);
         activity = this;
 
 
-        findViewById(R.id.generate_barcode).setOnClickListener(new View.OnClickListener() {
+        b3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inputValue = edtValue.getText().toString().trim();
-                if (inputValue.length() > 0) {
+                if (suffering.length() > 0) {
                     WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
                     Display display = manager.getDefaultDisplay();
                     Point point = new Point();
@@ -116,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     smallerDimension = smallerDimension * 3 / 4;
 
                     qrgEncoder = new QRGEncoder(
-                            inputValue, null,
+                            suffering, null,
                             QRGContents.Type.TEXT,
                             smallerDimension);
                     try {
@@ -125,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
-                    edtValue.setError(getResources().getString(R.string.value_required));
                 }
             }
         });
@@ -149,27 +165,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.adddetails).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(typeofperson.equals("Public Place")) {
-                    startActivity(new Intent(getApplicationContext(), Scanner.class));
-                }
-                else
-                {
-                    Toast.makeText(MainActivity.this, "You are not permitted to Scan", Toast.LENGTH_SHORT).show();
 
-                }
-            }
-        });
 
     }
     private void signIn() {
         //Init providers
         providers = Arrays.asList(
-                new AuthUI.IdpConfig.PhoneBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.EmailBuilder().build()
+                new AuthUI.IdpConfig.PhoneBuilder().build()
         );
 
         showSignInOptions();
