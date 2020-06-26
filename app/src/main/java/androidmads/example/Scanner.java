@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -21,11 +22,13 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 public class Scanner extends AppCompatActivity {
     private CodeScanner mCodeScanner;
+    AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
+        builder = new AlertDialog.Builder(this);
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
         mCodeScanner = new CodeScanner(this, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -34,7 +37,18 @@ public class Scanner extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(Scanner.this, result.getText(), Toast.LENGTH_SHORT).show();
+                        String value = result.getText();
+                        String[] splited = value.split("\\s+");
+                        if(splited[0].equals("No")) {
+                            builder.setMessage("Safe");
+                        }
+                        else if(splited[0].equals("Yes"))
+                        {
+                            builder.setMessage("Not Safe");
+                        }
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("Status");
+                        alert.show();
                     }
                 });
             }
@@ -76,7 +90,6 @@ public class Scanner extends AppCompatActivity {
         }).check();
 
     }
-
     @Override
     protected void onPause() {
         mCodeScanner.releaseResources();

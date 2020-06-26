@@ -2,6 +2,7 @@ package androidmads.example;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,9 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 public class UpdateProfile extends AppCompatActivity {
     EditText edittextName, address1;
     Button b1,b2;
-    Spinner getcovid, getuses;
     DatabaseReference databaseRegistrations;
-    String name, address;
+    String name, address, suffer, type;
+    TextView issuffering, typeregister;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,9 @@ public class UpdateProfile extends AppCompatActivity {
         setContentView(R.layout.activity_update_profile);
         databaseRegistrations = FirebaseDatabase.getInstance().getReference("registrations");
         b1 = (Button) findViewById(R.id.adddetails);
-        b1.setVisibility(View.INVISIBLE);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Updating Details. Please Wait");
+        progressDialog.show();
         b2 =(Button) findViewById(R.id.back);
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,8 +47,9 @@ public class UpdateProfile extends AppCompatActivity {
         });
         edittextName = (EditText) findViewById(R.id.editText11);
         address1 = (EditText) findViewById(R.id.editText12);
-        getcovid = (Spinner) findViewById(R.id.spinner);
-        getuses = (Spinner) findViewById(R.id.spinner1);
+        issuffering = (TextView) findViewById(R.id.textView5);
+        typeregister = (TextView) findViewById(R.id.textView6);
+
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
         String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         DatabaseReference userNameRef = rootRef.child("registrations").child(number);
@@ -52,9 +58,13 @@ public class UpdateProfile extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 name = dataSnapshot.child("name").getValue(String.class);
                 address = dataSnapshot.child("address").getValue(String.class);
+                suffer = dataSnapshot.child("suffering").getValue(String.class);
+                type = dataSnapshot.child("type").getValue(String.class);
                 edittextName.setText(name);
                 address1.setText(address);
-                b1.setVisibility(View.VISIBLE);
+                issuffering.setText(suffer);
+                typeregister.setText(type);
+                progressDialog.dismiss();
 
             }
             @Override
@@ -74,11 +84,9 @@ public class UpdateProfile extends AppCompatActivity {
     {
         String name = edittextName.getText().toString().trim();
         String address = address1.getText().toString().trim();
-        String suff = getcovid.getSelectedItem().toString();
-        String usesinfo = getuses.getSelectedItem().toString();
         if (!TextUtils.isEmpty(name)) {
             String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-            Details details = new Details(name, address, number, suff, usesinfo);
+            Details details = new Details(name, address, number, suffer, type);
             databaseRegistrations.child(number).setValue(details);
             Toast.makeText(this, "Your Profile has been updated", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(UpdateProfile.this, UpdateProfile.class));

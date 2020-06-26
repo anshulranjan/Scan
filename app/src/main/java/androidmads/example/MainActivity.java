@@ -1,6 +1,7 @@
 package androidmads.example;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     Button b1;
     Button b2,b3,b4;
     String typeofperson, suffering;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         b2 = (Button) findViewById(R.id.adddetails);
         b3 = (Button) findViewById(R.id.generate_barcode);
         b4 = (Button) findViewById(R.id.button3);
-        b2.setVisibility(View.INVISIBLE);
-        b3.setVisibility(View.INVISIBLE);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Getting Details. Please Wait");
+        progressDialog.show();
         b4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         typeofperson = dataSnapshot.child("type").getValue(String.class);
                         suffering = dataSnapshot.child("suffering").getValue(String.class);
                         Log.d("Message", typeofperson);
-                        b2.setVisibility(View.VISIBLE);
-                        b3.setVisibility(View.VISIBLE);
+                        progressDialog.dismiss();
                         b2.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -130,26 +132,35 @@ public class MainActivity extends AppCompatActivity {
         b3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (suffering.length() > 0) {
-                    WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                    Display display = manager.getDefaultDisplay();
-                    Point point = new Point();
-                    display.getSize(point);
-                    int width = point.x;
-                    int height = point.y;
-                    int smallerDimension = width < height ? width : height;
-                    smallerDimension = smallerDimension * 3 / 4;
+                if(typeofperson.equals("Person"))
+                {
+                    String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+                    String input = suffering.concat(" ").concat(number);
+                    if (input.length() > 0) {
+                        WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                        Display display = manager.getDefaultDisplay();
+                        Point point = new Point();
+                        display.getSize(point);
+                        int width = point.x;
+                        int height = point.y;
+                        int smallerDimension = width < height ? width : height;
+                        smallerDimension = smallerDimension * 3 / 4;
 
-                    qrgEncoder = new QRGEncoder(
-                            suffering, null,
-                            QRGContents.Type.TEXT,
-                            smallerDimension);
-                    try {
-                        bitmap = qrgEncoder.getBitmap();
-                        qrImage.setImageBitmap(bitmap);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        qrgEncoder = new QRGEncoder(
+                                input, null,
+                                QRGContents.Type.TEXT,
+                                smallerDimension);
+                        try {
+                            bitmap = qrgEncoder.getBitmap();
+                            qrImage.setImageBitmap(bitmap);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "You are not Registerd as Person. You are only allowed to Scan the code", Toast.LENGTH_LONG).show();
                 }
             }
         });
