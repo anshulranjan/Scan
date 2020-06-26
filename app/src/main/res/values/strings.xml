@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QRGenerator</string>
+    <string name="app_name">Scan It</string>
     <string name="save">Save</string>
     <string name="generate">Generate QRCode</string>
     <string name="enter_text">Enter Text</string>

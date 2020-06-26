@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private QRGEncoder qrgEncoder;
     private AppCompatActivity activity;
     Button b1;
-    Button b2,b3;
+    Button b2,b3,b4;
     String typeofperson, suffering;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +64,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         b2 = (Button) findViewById(R.id.adddetails);
         b3 = (Button) findViewById(R.id.generate_barcode);
+        b4 = (Button) findViewById(R.id.button3);
         b2.setVisibility(View.INVISIBLE);
         b3.setVisibility(View.INVISIBLE);
+        b4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, UpdateProfile.class));
+            }
+        });
         if (user == null) {
             signIn();
         } else {
@@ -94,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else
                                 {
-                                    Toast.makeText(MainActivity.this, "You are not allowed to enter", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MainActivity.this, "You are Registerd as Person. So you are not allowed to Scan the code", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
