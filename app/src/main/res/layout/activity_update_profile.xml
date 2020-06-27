@@ -65,7 +65,7 @@
         android:id="@+id/adddetails"
         android:layout_width="148dp"
         android:layout_height="54dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="44dp"
         android:background="@android:color/holo_blue_dark"
         android:text="Update Details"
         android:textColor="@android:color/black"
@@ -83,9 +83,19 @@
         android:textColor="@android:color/black"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.104"
+        app:layout_constraintHorizontal_bias="0.101"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner2" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="352dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/covidfree"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView2"
@@ -101,23 +111,10 @@
         app:layout_constraintTop_toBottomOf="@+id/editText12" />
 
     <TextView
-        android:id="@+id/textView5"
-        android:layout_width="294dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="20dp"
-        android:text="Details Awaited..."
-        android:textColor="@android:color/black"
-        android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.247"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="Details Awaited.."
         android:textColor="@android:color/black"
         android:textSize="16dp"

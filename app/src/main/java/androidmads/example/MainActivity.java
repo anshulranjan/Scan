@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         b3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(typeofperson.equals("Person"))
+                if(typeofperson.equals("Person") && suffering.equals("No"))
                 {
                     String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
                     String input = suffering.concat(" ").concat(number);
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(MainActivity.this, "You are not Registerd as Person. You are only allowed to Scan the code", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "You are not allowed to Generate the code", Toast.LENGTH_LONG).show();
                 }
             }
         });

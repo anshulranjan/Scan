@@ -24,8 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 public class UpdateProfile extends AppCompatActivity {
     EditText edittextName, address1;
     Button b1,b2;
+    Spinner getcovid;
     DatabaseReference databaseRegistrations;
-    String name, address, suffer, type;
+    String name, address, suffering, type;
     TextView issuffering, typeregister;
     ProgressDialog progressDialog;
 
@@ -36,6 +37,7 @@ public class UpdateProfile extends AppCompatActivity {
         databaseRegistrations = FirebaseDatabase.getInstance().getReference("registrations");
         b1 = (Button) findViewById(R.id.adddetails);
         progressDialog = new ProgressDialog(this);
+        getcovid = (Spinner) findViewById(R.id.spinner2);
         progressDialog.setMessage("Updating Details. Please Wait");
         progressDialog.show();
         b2 =(Button) findViewById(R.id.back);
@@ -47,7 +49,6 @@ public class UpdateProfile extends AppCompatActivity {
         });
         edittextName = (EditText) findViewById(R.id.editText11);
         address1 = (EditText) findViewById(R.id.editText12);
-        issuffering = (TextView) findViewById(R.id.textView5);
         typeregister = (TextView) findViewById(R.id.textView6);
 
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
@@ -58,11 +59,9 @@ public class UpdateProfile extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 name = dataSnapshot.child("name").getValue(String.class);
                 address = dataSnapshot.child("address").getValue(String.class);
-                suffer = dataSnapshot.child("suffering").getValue(String.class);
                 type = dataSnapshot.child("type").getValue(String.class);
                 edittextName.setText(name);
                 address1.setText(address);
-                issuffering.setText(suffer);
                 typeregister.setText(type);
                 progressDialog.dismiss();
 
@@ -86,7 +85,8 @@ public class UpdateProfile extends AppCompatActivity {
         String address = address1.getText().toString().trim();
         if (!TextUtils.isEmpty(name)) {
             String number = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-            Details details = new Details(name, address, number, suffer, type);
+            String suffering = getcovid.getSelectedItem().toString();
+            Details details = new Details(name, address, number, suffering, type);
             databaseRegistrations.child(number).setValue(details);
             Toast.makeText(this, "Your Profile has been updated", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(UpdateProfile.this, UpdateProfile.class));
