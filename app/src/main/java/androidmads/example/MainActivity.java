@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                     {
                         typeofperson = dataSnapshot.child("type").getValue(String.class);
                         suffering = dataSnapshot.child("suffering").getValue(String.class);
-                        Log.d("Message", typeofperson);
                         progressDialog.dismiss();
                         b2.setOnClickListener(new View.OnClickListener() {
                             @Override
